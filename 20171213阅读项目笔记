@@ -1,0 +1,162 @@
+20171213阅读项目笔记
+
+############1：appdelegate
+
+在appdelegate中【p_initLaunchAdvert】方法中先找启动图，
+调用完成则在获取 GZIMChatHelper---> 获取当前charDict的数据（数据库查询）
+
+此处有一个初始化数据操作，
+比如有消息的列表页面的数据获取，从数据库初始化时获取用setappid时后去
+，，，用户信息
+，，，
+，，，
+
+
+*********   创建群聊
+创建群聊控制器【GZIMGroupHandlerContactViewController】
+创建群组【p_createNewGroup】网络链接--->[createGroupWithName]->updateGroup
+
+
+
+###### 获取数据是通过messagehelper中的【notifyPushMessage】实现长连接获取消息
+接受完成发送通知【kGZIMMessagePushDoneObserverName】在chatlistviewcontroller页面中接受通知，在接到通知以后更新数据源unreadcount数量，并一同改变未读数量
+
+
+
+
+先检查是否为纯董事会数据
+
+1：不通过
+1.1获取已经读取的红点数据
+1.2 获取
+1.3 更新部门数据从服务器
+
+
+
+
+
+
+
+2：消息tabbar【GZIMChatListViewController】
+
+2.1 数据源获取
+因为该页面继承【GZIMTableViewController】而在该vc上有搜索框和各个代理方法的实现和空数据项的页面提示。数据源为self.data
+
+在【GZIMChatListViewController】的viewwillappear去单利中
+self.data = [GZIMChatHelper sharedHelper].chatArray的数据！！！这里的chartarry就在appdelegate中数据库服务调用setappid查询数据库获取。
+***该页面的category中实现了该页面的tableview的代理方法
+***该页面的搜索页面 是跳转至GZIMSearchViewController页面
+***点击cell跳转在页面的category中的
+“ [self startChat:self.data[indexPath.row]];”
+利用该方法跳转是聊天详情页面【GZIMChatViewController】
+
+ps：布局用tableview页面，列表展示
+
+
+
+
+
+############2：GZIMChatViewController【聊天详情界面】
+
+ps：这里有一个长按消息有一个弹出层，或有对应选择项弹出，方法则利用代理传出执行
+功能分开展示，处理图片、消息、弹出层、toolbar等需要注意查看控件所在位置
+
+1：背景图片设置
+把用户名处理成背景显示
+
+2：数据加载
+在viewdidload中使用
+p_pagingLoadNewMessageWithRemainCount加载历史数据
+
+
+3：view
+使用MessageDisplayView：UIView数据显示。他的里面有tableview
+
+4:数据拉去
+在viewwillappear
+p_checkNewMessageListWithScroll-->p_addNewMessageListWithScroll--->
+
+添加self.messageDisplayView.data的数据【newMessageList】
+
+
+
+
+
+
+
+startRequest
+[
+
+setHttpRequestHeader
+
+requestChoice
+
+sign [
+###加密处理
+1:机器信息+param=
+{
+	deviceModel = iPhone;
+    dpi = 326;
+    idfa = "A1631CB6-9CF6-49DA-A161-D708A3BD1680";
+    model = "x86_64";
+    net = wifi;
+    osv = "iOS11.2";
+    platform = 1;
+    screenWH = "750,1334";
+}
++
+{
+    clientType = 0;
+    "device_ext" = "zzg的MacBook Pro|iOS 11.2|呱呱|1.6.5";
+    "device_id" = "B722D880-CDB9-4847-BD6C-88936529D44A";
+    "login_app_type" = 1;
+    "login_ip" = "10.215.101.22";
+    "login_type" = 8;
+    password = Wang123456;
+    username = wanghuizhou;
+}
+
+
+2:对字典中的value做encode处理 最后处理成MD5S数据
+
+
+self.urlRequestParams 机器和版本信息
+	[
+		{
+	    deviceModel = iPhone;
+	    dpi = 326;
+	    idfa = "A1631CB6-9CF6-49DA-A161-D708A3BD1680";
+	    model = "x86_64";
+	    net = wifi;
+	    osv = "iOS11.2";
+	    platform = 1;
+	    screenWH = "750,1334";
+	}
+	]
+]
+
+]
+
+
+requestFromeServer--->获取到所有的params字段信息
+{
+    clientType = 0;
+    "device_ext" = "zzg的MacBook Pro|iOS 11.2|呱呱|1.6.5";
+    "device_id" = "B722D880-CDB9-4847-BD6C-88936529D44A";
+    "login_app_type" = 1;
+    "login_ip" = "10.215.101.22";
+    "login_type" = 8;
+    password = Wang123456;
+    username = wanghuizhou;
+}
+
+
+
+
+
+成功放回数据接口
+handlRequestWithResponseData--->通过successCallback 回调完成
+
+
+
+
